@@ -1,0 +1,23 @@
+312. Burst Balloons https://leetcode.com/problems/burst-balloons/
+
+    public int maxCoins(int[] nums) {
+        int n = nums.length;
+        int[] coins = new int[n+2];
+        coins[0] = 1;
+        coins[n+1] = 1;
+        for (int i = 1; i <= n; i++) {
+            coins[i] = nums[i-1];
+        }
+        // dp[i][j] in here means, the maximum coins we get after we burst all the balloons between i and j in the original array.
+        int[][] dp = new int[n+2][n+2];
+        // in order to get the maximum value we can get for bursting all the balloons between [i, j] , we just loop through each balloon between these two indexes and make them to be the last balloon to be burst
+        for (int len = 1; len <= n; len++) {
+            for (int left = 1; left <= n - len + 1; left++) {
+                int right = left + len - 1;
+                for (int k = left; k <= right; k++) {
+                    dp[left][right] = Math.max(dp[left][right], dp[left][k-1] + coins[left-1]*coins[k]*coins[right+1] + dp[k+1][right]);
+                }
+            }
+        }
+        return dp[1][n];
+    }
